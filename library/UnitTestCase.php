@@ -150,7 +150,8 @@ abstract class UnitTestCase extends BaseTestCase
         $reportingLevel = (int) getenv('TRAVIS_ERROR_LEVEL');
         error_reporting($reportingLevel ? $reportingLevel : ((E_ALL ^ E_NOTICE) | E_STRICT));
 
-        $this->dbObjectBackup = $this->getProtectedClassProperty(Database::getInstance(), 'db');
+        // skipping this part to find out, if the CI is failing cause of to many connections
+        //$this->dbObjectBackup = $this->getProtectedClassProperty(Database::getInstance(), 'db');
         $this->dbQueryBuffer = array();
 
         $this->setShopId(null);
@@ -180,10 +181,14 @@ abstract class UnitTestCase extends BaseTestCase
      */
     protected function tearDown()
     {
-        Database::getDb()->closeConnection();
-
-        $this->setProtectedClassProperty(Database::getInstance(), 'db', $this->dbObjectBackup);
-        Database::getDb()->closeConnection();
+        /*
+            // skipping this part to find out, if the CI is failing cause of to many connections
+    
+            Database::getDb()->closeConnection();
+    
+            $this->setProtectedClassProperty(Database::getInstance(), 'db', $this->dbObjectBackup);
+            Database::getDb()->closeConnection();
+         */
 
         if ($this->getResult() === null) {
             $this->cleanUpDatabase();
