@@ -811,6 +811,9 @@ abstract class UnitTestCase extends BaseTestCase
     /**
      * Set a given protected property of a given class instance to a given value.
      *
+     * Note: Please use this methods only for static 'mocking' or with other hard reasons!
+     *       For the most possible non static usages there exist other solutions.
+     *
      * @param object $classInstance Instance of the class of which the property will be set
      * @param string $property      Name of the property to be set
      * @param mixed  $value         Value to which the property will be set
@@ -829,6 +832,9 @@ abstract class UnitTestCase extends BaseTestCase
     /**
      * Get a given protected property of a given class instance.
      *
+     * Note: Please use this methods only for static 'mocking' or with other hard reasons!
+     *       For the most possible non static usages there exist other solutions.
+
      * @param object $classInstance Instance of the class of which the property will be set
      * @param string $property      Name of the property to be retrieved
      *
