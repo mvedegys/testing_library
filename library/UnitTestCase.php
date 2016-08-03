@@ -202,7 +202,7 @@ abstract class UnitTestCase extends BaseTestCase
         self::getShopStateBackup()->resetStaticVariables();
         $dbRestore = self::_getDbRestore();
         $dbRestore->restoreDB();
-        Database::getDb()->closeConnection();
+        oxDb::getDb()->closeConnection();
     }
 
     /**
