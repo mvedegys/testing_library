@@ -969,7 +969,7 @@ abstract class AcceptanceTestCase extends MinkWrapper
      *
      * @return null
      */
-    public function clickAndWait($locator, $iSeconds = 10)
+    public function clickAndWait($locator, $iSeconds = 30)
     {
         $locator = $this->translate($locator);
         if ($this->getSelectedFrame() != 'relative=top') {
