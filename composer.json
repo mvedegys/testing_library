@@ -16,7 +16,7 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "phpunit/phpcov": "*",
         "symfony/dom-crawler": "v2.7.*",
-        "oxid-esales/eshop-db-views-regenerator": "dev-master"
+        "oxid-esales/eshop-db-views-regenerator": "dev-rename_occurrences_of_existing_namespaces-ESDEV-4081"
     },
     "bin": [
         "bin/reset-shop",
