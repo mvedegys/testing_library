@@ -22,8 +22,9 @@
 namespace OxidEsales\TestingLibrary\Services\Library;
 
 use Exception;
-use mysqli;
-use mysqli_result;
+use PDO;
+use PDOStatement;
+use PDOException;
 use OxConfigFile;
 
 /**
@@ -34,7 +35,7 @@ class DatabaseHandler
     /** @var oxConfigFile */
     private $configFile;
 
-    /** @var mysqli Database connection. */
+    /** @var PDO Database connection. */
     private $dbConnection;
 
     /**
@@ -47,10 +48,18 @@ class DatabaseHandler
     public function __construct($configFile)
     {
         $this->configFile = $configFile;
-        if (!function_exists('mysqli_connect')) {
-            throw new \Exception("the php MySQLi extension is not installed!\n");
+        if (!extension_loaded('pdo_mysql')) {
+            throw new \Exception("the php pdo_mysql extension is not installed!\n");
         }
-        if (!$this->dbConnection = @mysqli_connect($this->getDbHost(), $this->getDbUser(), $this->getDbPassword())) {
+
+        $dsn = 'mysql' .
+               ':dbname=' . $this->getDbName() .
+               ';host=' . $this->getDbHost() .
+               (empty($this->getDbPort()) ? '' : ';port=' . $this->getDbPort());
+
+        try{
+            $this->dbConnection = new PDO($dsn, $this->getDbUser(), $this->getDbPassword());
+        } catch (\PDOException $exception) {
             throw new \Exception("Database '{$this->getDbHost()}.{$this->getDbName()}' is unreachable for user '{$this->getDbUser()}'!\n");
         }
     }
@@ -87,12 +96,19 @@ class DatabaseHandler
      *
      * @param string $sql Sql query to execute.
      *
-     * @return mysqli_result
+     * @return PDOStatement|false
      */
     public function query($sql)
     {
-        mysqli_select_db($this->getDbConnection(), $this->getDbName());
-        return mysqli_query($this->getDbConnection(), $sql);
+        return $this->getDbConnection()->query($sql);
+    }
+
+    /**
+     *
+     */
+    public function fetch($rs)
+    {
+        return $this->getDbConnection()->fetch($rs);
     }
 
     /**
@@ -101,7 +117,7 @@ class DatabaseHandler
      */
     public function escape($value)
     {
-        return mysqli_real_escape_string($this->getDbConnection(), $value);
+        return $this->getDbConnection()->quote($value);
     }
 
     /**
@@ -147,9 +163,17 @@ class DatabaseHandler
     }
 
     /**
+     * @return string
+     */
+    public function getDbPort()
+    {
+        return $this->configFile->dbPort;
+    }
+
+    /**
      * Returns database resource
      *
-     * @return mysqli
+     * @return PDO
      */
     public function getDbConnection()
     {
