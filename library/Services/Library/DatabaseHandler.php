@@ -53,7 +53,8 @@ class DatabaseHandler
         }
 
         $dsn = 'mysql' .
-               ':host=' . $this->getDbHost() .
+               ':dbname=' . $this->getDbName() . ';' .
+               'host=' . $this->getDbHost() .
                (empty($this->getDbPort()) ? '' : ';port=' . $this->getDbPort());
 
         try{
