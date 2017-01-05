@@ -52,8 +52,8 @@ class DatabaseHandler
             throw new \Exception("the php pdo_mysql extension is not installed!\n");
         }
 
-        $dsn = 'mysql: ' .
-               'host=' . $this->getDbHost() .
+        $dsn = 'mysql' .
+               ':host=' . $this->getDbHost() .
                (empty($this->getDbPort()) ? '' : ';port=' . $this->getDbPort());
 
         try{
