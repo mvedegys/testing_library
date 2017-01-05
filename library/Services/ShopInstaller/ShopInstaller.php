@@ -87,6 +87,13 @@ class ShopInstaller implements ShopServiceInterface
 
         $this->setupDatabase();
 
+        $dbCon = $this->getDbHandler()->getDbConnection();
+        if (is_a($dbCon, 'PDO')) {
+            var_dump('After setupDatabase db connection error code ' . $dbCon->errorCode());
+        } else {
+            var_dump('After setupDatabase please check Shopinstaller::init database connection');
+        }
+
         if ($tempDir = $request->getParameter('tempDirectory')) {
             $this->insertConfigValue('string', 'sCompileDir', $tempDir);
         }
@@ -101,6 +108,13 @@ class ShopInstaller implements ShopServiceInterface
         }
 
         $this->setConfigurationParameters();
+
+        $dbCon = $this->getDbHandler()->getDbConnection();
+        if (is_a($dbCon, 'PDO')) {
+            var_dump('After setting config values db connection error code ' . $dbCon->errorCode());
+        } else {
+            var_dump('After setting config values please check Shopinstaller::init database connection');
+        }
 
         $this->setSerialNumber($serialNumber);
 

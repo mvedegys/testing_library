@@ -157,6 +157,12 @@ class DatabaseHandler
     {
         try {
             $this->getDbConnection()->exec("USE " . $this->getDbName());
+
+            $dbCon = $this->getDbConnection();
+            if (is_a($dbCon, 'PDO') && ('00000' !== $dbCon->errorCode())) {
+                var_dump('Error after calling useConfigured Database ' . $dbCon->errorCode(), $dbCon->errorInfo());
+            }
+
         } catch (Exception $e) {
             throw new Exception("Could not connect to database " . $this->getDbName());
         }
