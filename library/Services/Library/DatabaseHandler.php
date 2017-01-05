@@ -156,12 +156,18 @@ class DatabaseHandler
     protected function useConfiguredDatabase()
     {
         try {
-            $query = "USE " . $this->getDbName();
-            $this->getDbConnection()->exec("USE " . $this->getDbName());
+            $query = 'USE `' . $this->getDbName() . '`';
+            #$this->getDbConnection()->exec("USE " . $this->getDbName());
+            $this->getDbConnection()->query($query);
 
             $dbCon = $this->getDbConnection();
             if (is_a($dbCon, 'PDO') && ('00000' !== $dbCon->errorCode())) {
                 var_dump('Error after calling useConfigured Database ' . $dbCon->errorCode(), $dbCon->errorInfo(), $query);
+
+                $res = $dbCon->query('SELECT DATABASE()');
+                if (is_a($res,'PDOStatement')) {
+                    var_dump($res->fetchAll());
+                }
             }
 
         } catch (Exception $e) {

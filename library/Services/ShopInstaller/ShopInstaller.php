@@ -94,6 +94,11 @@ class ShopInstaller implements ShopServiceInterface
             var_dump('After setupDatabase please check Shopinstaller::init database connection');
         }
 
+        $res = $dbCon->query('SELECT DATABASE()');
+        if (is_a($res,'PDOStatement')) {
+            var_dump($res->fetchAll());
+        }
+
         $this->dbHandler = null;
 
         if ($tempDir = $request->getParameter('tempDirectory')) {
