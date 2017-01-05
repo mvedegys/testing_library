@@ -94,6 +94,8 @@ class ShopInstaller implements ShopServiceInterface
             var_dump('After setupDatabase please check Shopinstaller::init database connection');
         }
 
+        $this->dbHandler = null;
+
         if ($tempDir = $request->getParameter('tempDirectory')) {
             $this->insertConfigValue('string', 'sCompileDir', $tempDir);
         }
@@ -337,6 +339,10 @@ class ShopInstaller implements ShopServiceInterface
      */
     protected function getDbHandler()
     {
+        if (is_null($this->dbHandler)) {
+            $this->dbHandler = new DatabaseHandler($this->shopConfig);
+        }
+
         return $this->dbHandler;
     }
 

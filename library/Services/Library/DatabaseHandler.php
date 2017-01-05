@@ -52,8 +52,8 @@ class DatabaseHandler
             throw new \Exception("the php pdo_mysql extension is not installed!\n");
         }
 
-        $dsn = 'mysql' .
-               ':host=' . $this->getDbHost() .
+        $dsn = 'mysql: ' .
+               'host=' . $this->getDbHost() .
                (empty($this->getDbPort()) ? '' : ';port=' . $this->getDbPort());
 
         try{
@@ -156,11 +156,12 @@ class DatabaseHandler
     protected function useConfiguredDatabase()
     {
         try {
+            $query = "USE " . $this->getDbName();
             $this->getDbConnection()->exec("USE " . $this->getDbName());
 
             $dbCon = $this->getDbConnection();
             if (is_a($dbCon, 'PDO') && ('00000' !== $dbCon->errorCode())) {
-                var_dump('Error after calling useConfigured Database ' . $dbCon->errorCode(), $dbCon->errorInfo());
+                var_dump('Error after calling useConfigured Database ' . $dbCon->errorCode(), $dbCon->errorInfo(), $query);
             }
 
         } catch (Exception $e) {
