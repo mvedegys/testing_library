@@ -191,6 +191,9 @@ class ShopInstaller implements ShopServiceInterface
      */
     public function setSerialNumber($serialNumber = null)
     {
+        $startTime = Registry::getConfig()->getConfigParam('sTagList');
+        var_dump('setSerialNumber before ' . date('Y-m-d h:i:s', $startTime));
+
         if (class_exists('OxidEsales\EshopProfessional\Core\Serial')) {
             $dbHandler = $this->getDbHandler();
 
@@ -207,6 +210,7 @@ class ShopInstaller implements ShopServiceInterface
 
             $dbHandler->query("update oxshops set oxserial = '{$serialNumber}'");
             $dbHandler->query("delete from oxconfig where oxvarname in ('aSerials','sTagList','IMD','IMA','IMS')");
+
             $dbHandler->query(
                 "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue) values " .
                 "('serial1', '{$shopId}', 'aSerials', 'arr', ENCODE('" . serialize(array($serialNumber)) . "','{$this->getConfigKey()}') )," .
@@ -215,6 +219,40 @@ class ShopInstaller implements ShopServiceInterface
                 "('serial4', '{$shopId}', 'IMA',      'str', ENCODE('" . $maxArticles . "','{$this->getConfigKey()}') )," .
                 "('serial5', '{$shopId}', 'IMS',      'str', ENCODE('" . $maxShops . "','{$this->getConfigKey()}') )"
             );
+/*
+            $query =  "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue) values " .
+                      "('serial1', '{$shopId}', 'aSerials', 'arr', ENCODE('" . serialize(array($serialNumber)) . "','{$this->getConfigKey()}') )," .
+                      "('serial2', '{$shopId}', 'sTagList', 'str', ENCODE('" . time() . "','{$this->getConfigKey()}') )," .
+                      "('serial3', '{$shopId}', 'IMD',      'str', ENCODE('" . $maxDays . "','{$this->getConfigKey()}') )," .
+                      "('serial4', '{$shopId}', 'IMA',      'str', ENCODE('" . $maxArticles . "','{$this->getConfigKey()}') )," .
+                      "('serial5', '{$shopId}', 'IMS',      'str', ENCODE('" . $maxShops . "','{$this->getConfigKey()}') )";
+
+            var_dump($query);
+
+            $dbHandler->query($query);
+*/
+            $dbCon = $dbHandler->getDbConnection();
+            if (is_a($dbCon, 'PDO')) {
+                var_dump('1 db connection error code ' . $dbCon->errorCode());
+            } else {
+                var_dump('1 please check Shopinstaller::setSerial database connection');
+            }
+
+            $res = $dbHandler->query("select OXSHOPID, FROM_UNIXTIME(decode(oxvarvalue, 'fq45QS09_fqyx09239QQ')) as sTagTime from oxconfig where oxvarname = 'sTagList'");
+            if (is_a($res,'PDOStatement')) {
+                var_dump($res->fetchAll());
+            }
+
+            $dbCon = $dbHandler->getDbConnection();
+            if (is_a($dbCon, 'PDO')) {
+                var_dump('2 db connection error code ' . $dbCon->errorCode());
+            } else {
+                var_dump('2 please check Shopinstaller::setSerial database connection');
+            }
+
+            $startTime = Registry::getConfig()->getConfigParam('sTagList');
+            var_dump('setSerialNumber after ' . date('Y-m-d h:i:s', $startTime));
+
         }
     }
 
